@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MindBridge — Product UI</title>
+<style>
+:root{
+  --paper:#f5f2ea; --ink:#1c1e1a; --muted:#5b5a52; --line:#ddd7c8; --line-strong:#c9c1ac;
+  --accent:#2f6f52; --accent-deep:#1f4d38; --accent-soft:#e3efe6;
+  --amber:#a8631f; --amber-soft:#f5ead9;
+  --red:#a83a2c; --red-soft:#f7e6e2;
+  --blue:#305e85; --blue-soft:#e4ecf3;
+  --font-display:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --font-body:-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  --app-bg:#faf7f1; --app-surface:#ffffff; --app-line:#e7e1d3;
+}
+@media (prefers-color-scheme: dark){
+  :root{ --paper:#14160f; --ink:#ece9dd; --muted:#a6a290; --line:#33362b; --line-strong:#454736;
+    --accent:#74cf9e; --accent-deep:#9be0bd; --accent-soft:#1e2f26;
+    --amber:#e2a568; --amber-soft:#33291b; --red:#e28477; --red-soft:#3a2420; --blue:#8fb7dc; --blue-soft:#1e2a35; }
+}
+:root[data-theme="dark"]{ --paper:#14160f; --ink:#ece9dd; --muted:#a6a290; --line:#33362b; --line-strong:#454736;
+  --accent:#74cf9e; --accent-deep:#9be0bd; --accent-soft:#1e2f26;
+  --amber:#e2a568; --amber-soft:#33291b; --red:#e28477; --red-soft:#3a2420; --blue:#8fb7dc; --blue-soft:#1e2a35; }
+:root[data-theme="light"]{ --paper:#f5f2ea; --ink:#1c1e1a; --muted:#5b5a52; --line:#ddd7c8; --line-strong:#c9c1ac;
+  --accent:#2f6f52; --accent-deep:#1f4d38; --accent-soft:#e3efe6;
+  --amber:#a8631f; --amber-soft:#f5ead9; --red:#a83a2c; --red-soft:#f7e6e2; --blue:#305e85; --blue-soft:#e4ecf3; }
+
+*{box-sizing:border-box;}
+html{background:var(--paper);}
+body{background:var(--paper);color:var(--ink);font-family:var(--font-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;}
+.page{max-width:1180px;margin:0 auto;padding:60px 26px 100px;}
+
+.doc-head{margin-bottom:44px;font-family:var(--font-display);}
+.eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--accent-deep);margin-bottom:14px;}
+h1.title{font-size:clamp(30px,4.6vw,44px);font-weight:400;letter-spacing:-.01em;line-height:1.08;text-wrap:balance;margin:0 0 10px;}
+.subtitle{font-family:var(--font-body);font-size:16px;color:var(--muted);max-width:64ch;margin-bottom:24px;}
+.meta-strip{display:flex;flex-wrap:wrap;font-family:var(--font-mono);font-size:11.5px;border-top:1px solid var(--line-strong);border-bottom:1px solid var(--line-strong);}
+.meta-item{padding:10px 18px 10px 0;margin-right:18px;border-right:1px solid var(--line);color:var(--muted);}
+.meta-item:last-child{border-right:none;}
+.meta-item b{display:block;text-transform:uppercase;letter-spacing:.06em;font-size:9.5px;margin-bottom:3px;color:var(--muted);font-family:var(--font-mono);font-weight:600;}
+.meta-item span{color:var(--ink);font-size:12.5px;}
+
+.principles{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);margin-bottom:8px;}
+.principle{background:var(--paper);padding:18px 20px;}
+.principle .p-key{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;}
+.principle p{margin:0;font-size:13px;color:var(--muted);font-family:var(--font-body);}
+.principle strong{color:var(--ink);font-weight:600;}
+
+.tokens{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin:40px 0 64px;padding:18px 22px;border:1px solid var(--line-strong);}
+.tok-swatch{display:flex;align-items:center;gap:8px;font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+.tok-dot{width:14px;height:14px;border-radius:4px;border:1px solid var(--line-strong);}
+.tok-type{font-family:var(--font-display);font-size:15px;color:var(--ink);border-left:1px solid var(--line);padding-left:18px;}
+.tok-type span{font-family:var(--font-body);font-size:11px;color:var(--muted);display:block;font-family:var(--font-mono);}
+
+section.gallery-section{margin-bottom:70px;}
+.sec-head{margin-bottom:24px;max-width:70ch;}
+.sec-head .eyebrow{margin-bottom:6px;}
+h2.sec-title{font-family:var(--font-display);font-size:24px;font-weight:400;margin:0 0 6px;letter-spacing:-.005em;}
+.sec-note{color:var(--muted);font-size:14px;margin:0;}
+.gallery-row{display:flex;flex-wrap:wrap;gap:34px 24px;align-items:flex-start;}
+.frame-block{display:flex;flex-direction:column;align-items:center;width:280px;}
+.screen-cap{margin-top:12px;font-family:var(--font-mono);font-size:10.5px;color:var(--muted);text-align:center;line-height:1.5;}
+.screen-cap b{display:block;font-size:12px;color:var(--ink);font-family:var(--font-body);font-weight:600;margin-bottom:2px;}
+
+/* phone shell */
+.phone{width:280px;height:600px;background:var(--app-bg);border:1px solid var(--line-strong);border-radius:26px;
+  box-shadow:0 18px 34px rgba(30,20,10,.10);overflow:hidden;display:flex;flex-direction:column;font-family:var(--font-body);color:var(--ink);position:relative;}
+.pstatus{height:26px;flex-shrink:0;display:flex;align-items:center;justify-content:space-between;padding:0 16px;font-size:10.5px;color:var(--ink);font-weight:600;}
+.batt{width:16px;height:8px;border:1px solid var(--ink);border-radius:2px;position:relative;display:inline-block;}
+.batt::after{content:"";position:absolute;left:1px;top:1px;bottom:1px;width:10px;background:var(--ink);border-radius:1px;}
+.pcontent{flex:1;overflow:hidden;position:relative;padding:14px 16px;display:flex;flex-direction:column;}
+.pnav{height:54px;flex-shrink:0;display:flex;align-items:center;justify-content:space-around;border-top:1px solid var(--app-line);background:var(--app-surface);}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;font-size:9px;color:var(--muted);}
+.nav-item.active{color:var(--accent-deep);}
+.nav-icon{width:18px;height:18px;}
+.nav-icon path,.nav-icon circle{fill:none;stroke:currentColor;stroke-width:1.4;stroke-linecap:round;stroke-linejoin:round;}
+
+.topbar{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-shrink:0;}
+.topbar .back{font-size:18px;color:var(--ink);}
+.topbar .ttitle{font-size:14px;font-weight:600;flex:1;}
+.topbar .tsub{font-size:10px;color:var(--muted);display:block;margin-top:1px;}
+.topbar .tx{font-size:16px;color:var(--muted);margin-left:auto;}
+
+.btn{display:flex;align-items:center;justify-content:center;padding:11px 16px;border-radius:10px;font-size:12.5px;font-weight:600;font-family:var(--font-body);border:none;width:100%;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-outline{background:transparent;border:1px solid var(--line-strong);color:var(--ink);}
+.btn-crisis{background:var(--red);color:#fff;}
+.btn-sm{width:auto;padding:7px 13px;font-size:11px;}
+
+.chip{font-size:10.5px;padding:6px 11px;border-radius:20px;border:1px solid var(--app-line);color:var(--muted);background:var(--app-surface);white-space:nowrap;}
+.chip.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep);font-weight:600;}
+.chip-row{display:flex;gap:7px;overflow:hidden;margin-bottom:12px;flex-shrink:0;}
+
+.card{background:var(--app-surface);border:1px solid var(--app-line);border-radius:12px;padding:13px;}
+
+.dots{display:flex;gap:6px;justify-content:center;margin-top:auto;padding-top:14px;flex-shrink:0;}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--app-line);}
+.dot.active{background:var(--accent);width:16px;border-radius:3px;}
+
+.opt-card{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--app-line);border-radius:10px;margin-bottom:8px;font-size:12px;}
+.opt-card.sel{border-color:var(--accent);background:var(--accent-soft);color:var(--accent-deep);font-weight:600;}
+.radio{width:15px;height:15px;border-radius:50%;border:1.5px solid var(--line-strong);flex-shrink:0;position:relative;}
+.opt-card.sel .radio{border-color:var(--accent);}
+.opt-card.sel .radio::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--accent);}
+
+.otp-row{display:flex;gap:7px;justify-content:center;margin:16px 0;}
+.otp-box{width:32px;height:38px;border:1.5px solid var(--app-line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;}
+.otp-box.filled{border-color:var(--line-strong);}
+.otp-box.focus{border-color:var(--accent);}
+
+.slider-track{height:4px;background:var(--app-line);border-radius:2px;position:relative;margin:18px 4px 22px;}
+.slider-fill{position:absolute;left:0;top:0;height:4px;background:var(--accent);border-radius:2px;}
+.slider-thumb{position:absolute;top:50%;width:15px;height:15px;border-radius:50%;background:var(--accent);border:2.5px solid var(--app-surface);transform:translate(-50%,-50%);box-shadow:0 0 0 1px var(--accent);}
+
+.emoji-row{display:flex;justify-content:space-between;margin:14px 0 20px;}
+.emoji-opt{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;border:2px solid transparent;}
+.emoji-opt.sel{border-color:var(--accent);background:var(--accent-soft);}
+
+.msg-row{display:flex;margin-bottom:9px;}
+.msg-row.user{justify-content:flex-end;}
+.bubble{max-width:80%;padding:8px 12px;border-radius:13px;font-size:11.5px;line-height:1.42;}
+.bubble.ai{background:var(--app-surface);border:1px solid var(--app-line);border-bottom-left-radius:3px;}
+.bubble.user{background:var(--accent);color:#fff;border-bottom-right-radius:3px;}
+.qr-row{display:flex;gap:6px;flex-wrap:wrap;margin:4px 0 10px;}
+.input-bar{display:flex;align-items:center;gap:8px;border:1px solid var(--app-line);border-radius:20px;padding:8px 8px 8px 14px;font-size:11px;color:var(--muted);margin-top:auto;flex-shrink:0;background:var(--app-surface);}
+.input-bar .send{width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;}
+
+.crisis-card{background:var(--red-soft);border:1px solid var(--red);border-radius:12px;padding:14px;margin-top:8px;}
+.crisis-card h4{font-family:var(--font-display);font-size:14px;color:var(--red);margin:0 0 4px;font-weight:400;}
+.crisis-card p{font-size:11px;color:var(--ink);margin:0 0 10px;}
+.crisis-link{font-size:10.5px;color:var(--red);text-align:center;margin-top:8px;text-decoration:underline;}
+
+.avatar{border-radius:50%;background:var(--accent-soft);color:var(--accent-deep);display:flex;align-items:center;justify-content:center;font-family:var(--font-display);flex-shrink:0;}
+.ther-card{display:flex;gap:10px;padding:11px;border:1px solid var(--app-line);border-radius:12px;margin-bottom:9px;align-items:flex-start;}
+.ther-card .avatar{width:38px;height:38px;font-size:15px;}
+.ther-name{font-size:12px;font-weight:600;}
+.ther-meta{font-size:10px;color:var(--muted);margin-top:1px;line-height:1.4;}
+.ther-tags{display:flex;gap:5px;margin-top:5px;flex-wrap:wrap;}
+.mini-tag{font-size:9px;background:var(--app-bg);border:1px solid var(--app-line);border-radius:10px;padding:2px 7px;color:var(--muted);}
+
+.toggle{width:32px;height:18px;border-radius:10px;background:var(--accent);position:relative;flex-shrink:0;}
+.toggle::after{content:"";position:absolute;top:2px;right:2px;width:14px;height:14px;border-radius:50%;background:#fff;}
+
+.slot-grid{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:12px;}
+.slot{font-size:10.5px;padding:7px 10px;border:1px solid var(--app-line);border-radius:8px;color:var(--muted);}
+.slot.sel{background:var(--accent);color:#fff;border-color:var(--accent);font-weight:600;}
+.day-row{display:flex;gap:6px;margin-bottom:12px;}
+.day-chip{flex:1;text-align:center;padding:8px 0;border-radius:8px;border:1px solid var(--app-line);font-size:10px;color:var(--muted);}
+.day-chip .n{display:block;font-size:13px;font-weight:600;color:var(--ink);margin-top:2px;}
+.day-chip.sel{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-deep);}
+.day-chip.sel .n{color:var(--accent-deep);}
+
+.check-circle{width:52px;height:52px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:24px;margin:20px auto 14px;}
+
+.anon-card{border:1px solid var(--app-line);border-radius:10px;padding:10px;margin-bottom:8px;}
+.anon-head{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.anon-head .avatar{width:22px;height:22px;font-size:10px;background:var(--blue-soft);color:var(--blue);}
+.anon-name{font-size:10.5px;font-weight:600;}
+.anon-time{font-size:9px;color:var(--muted);margin-left:auto;}
+.anon-text{font-size:11px;color:var(--ink);line-height:1.4;}
+
+.mod-card{display:flex;gap:10px;padding:10px;border:1px solid var(--app-line);border-radius:10px;margin-bottom:9px;}
+.mod-thumb{width:44px;height:44px;border-radius:8px;flex-shrink:0;}
+.mod-title{font-size:11.5px;font-weight:600;}
+.mod-meta{font-size:9.5px;color:var(--muted);margin-top:2px;}
+.mod-bar{height:3px;background:var(--app-line);border-radius:2px;margin-top:6px;overflow:hidden;}
+.mod-bar span{display:block;height:100%;background:var(--accent);}
+
+.ring{width:120px;height:120px;border-radius:50%;background:conic-gradient(var(--accent) 0deg 260deg,var(--app-line) 260deg 360deg);display:flex;align-items:center;justify-content:center;margin:8px auto 4px;}
+.ring-in{width:88px;height:88px;border-radius:50%;background:var(--app-bg);display:flex;flex-direction:column;align-items:center;justify-content:center;}
+.ring-num{font-family:var(--font-display);font-size:26px;color:var(--ink);}
+.ring-lbl{font-size:9px;color:var(--muted);}
+.bars{display:flex;align-items:flex-end;gap:6px;height:60px;margin:14px 0;}
+.bar{flex:1;background:var(--app-line);border-radius:3px 3px 0 0;}
+.bar.hi{background:var(--accent);}
+
+.notif{display:flex;gap:9px;padding:11px 0;border-bottom:1px solid var(--app-line);align-items:flex-start;}
+.notif-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);flex-shrink:0;margin-top:5px;}
+.notif-dot.read{background:var(--app-line);}
+.notif-txt{font-size:11px;line-height:1.4;}
+.notif-time{font-size:9.5px;color:var(--muted);margin-top:2px;}
+
+.set-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--app-line);font-size:12px;}
+.set-row .lbl-sub{font-size:9.5px;color:var(--muted);}
+.set-row.danger{color:var(--red);}
+.set-head{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin:16px 0 4px;font-family:var(--font-mono);}
+
+.plan-card{border:1.5px solid var(--app-line);border-radius:12px;padding:14px;margin-bottom:10px;}
+.plan-card.hi{border-color:var(--accent);background:var(--accent-soft);position:relative;}
+.plan-tag{position:absolute;top:-9px;right:12px;background:var(--accent);color:#fff;font-size:8.5px;padding:2px 8px;border-radius:10px;font-weight:600;}
+.plan-price{font-family:var(--font-display);font-size:22px;margin:4px 0;}
+.plan-price span{font-size:11px;font-family:var(--font-body);color:var(--muted);}
+.feat{font-size:10.5px;color:var(--muted);padding:2px 0;}
+.feat::before{content:"✓ ";color:var(--accent);font-weight:700;}
+
+footer.pf{margin-top:60px;padding-top:22px;border-top:1px solid var(--line-strong);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;font-family:var(--font-mono);font-size:11px;color:var(--muted);}
+
+@media(max-width:720px){ .principles{grid-template-columns:1fr;} }
+@media (prefers-reduced-motion: reduce){ *{transition:none!important;animation:none!important;} }
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+<defs>
+<symbol id="i-home" viewBox="0 0 18 18"><path d="M2.5 8.5L9 3L15.5 8.5"/><path d="M4 8V15H14V8"/><path d="M7 15V11H11V15"/></symbol>
+<symbol id="i-chat" viewBox="0 0 18 18"><rect x="2.5" y="3.5" width="13" height="9" rx="3"/><path d="M6 12.5L5 15.5L9 12.5"/></symbol>
+<symbol id="i-circles" viewBox="0 0 18 18"><circle cx="6.5" cy="6.5" r="2.4"/><circle cx="12" cy="7.5" r="2"/><path d="M2.5 15C2.5 12 4.2 10.3 6.5 10.3S10.5 12 10.5 15"/><path d="M10.5 15C10.5 12.8 11.5 11.3 13 11.3S15.5 12.8 15.5 15"/></symbol>
+<symbol id="i-book" viewBox="0 0 18 18"><rect x="2.5" y="4" width="13" height="11" rx="1.5"/><path d="M2.5 7.5H15.5"/><path d="M6 2.5V5.5M12 2.5V5.5"/></symbol>
+<symbol id="i-user" viewBox="0 0 18 18"><circle cx="9" cy="6.5" r="3"/><path d="M3 15C3 11.5 5.5 9.7 9 9.7S15 11.5 15 15"/></symbol>
+</defs>
+</svg>
+
+<div class="page">
+
+<div class="doc-head">
+  <div class="eyebrow" style="font-family:var(--font-mono);">Product UI · MVP v1.0</div>
+  <h1 class="title">MindBridge — Product UI</h1>
+  <p class="subtitle">Twenty MVP must-have screens, one visual system. Prepared as a senior-product-design companion to the PRD and the system architecture note — the same brand identity (warm ink, forest green, serif moments) carried from document into product.</p>
+  <div class="meta-strip">
+    <div class="meta-item"><b>Screens</b><span>20 · all PRD Must-Haves</span></div>
+    <div class="meta-item"><b>Platform</b><span>iOS &amp; Android · React Native</span></div>
+    <div class="meta-item"><b>Dark mode</b><span>Deferred — PRD Could-Have</span></div>
+    <div class="meta-item"><b>Companion docs</b><span>PRD v1.0 · Architecture note</span></div>
+    <div class="meta-item"><b>Status</b><span>Draft — for design review</span></div>
+  </div>
+</div>
+
+<div class="principles">
+  <div class="principle"><div class="p-key">One primary action</div><p><strong>Every screen has exactly one obvious next step.</strong> Users arrive tired, anxious, or mid-crisis — a busy screen is a barrier, not a feature.</p></div>
+  <div class="principle"><div class="p-key">Crisis is never buried</div><p><strong>The escalation path gets its own visual register</strong> (red, serif empathy line, single button) so it never reads like a rejected form validation.</p></div>
+  <div class="principle"><div class="p-key">Calm, not clinical</div><p><strong>Warm paper tones and a serif voice for emotional moments</strong> — deliberately not the pastel-gradient meditation-app look competitors default to.</p></div>
+</div>
+
+<div class="tokens">
+  <div class="tok-swatch"><span class="tok-dot" style="background:var(--app-bg)"></span>App surface</div>
+  <div class="tok-swatch"><span class="tok-dot" style="background:var(--accent)"></span>Accent · primary action</div>
+  <div class="tok-swatch"><span class="tok-dot" style="background:var(--amber)"></span>Amber · nudges</div>
+  <div class="tok-swatch"><span class="tok-dot" style="background:var(--red)"></span>Red · crisis only</div>
+  <div class="tok-swatch"><span class="tok-dot" style="background:var(--blue)"></span>Blue · insight/data</div>
+  <div class="tok-type">Good morning, Arjun<span>Iowan Old Style / Georgia — emotional moments &amp; big numbers</span></div>
+  <div class="tok-type" style="font-family:var(--font-body);font-size:13px;">Book a session<span>System UI sans — everything functional</span></div>
+</div>
+
+<!-- ========== SECTION 1 — ONBOARDING & AUTH ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Onboarding &amp; auth</div>
+    <h2 class="sec-title">First run</h2>
+    <p class="sec-note">From install to a completed intake — the only screens a user sees once. No bottom nav yet; nothing to navigate to.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent" style="justify-content:center;align-items:center;text-align:center;">
+          <div style="width:120px;height:120px;border-radius:50%;background:var(--accent-soft);display:flex;align-items:center;justify-content:center;margin-bottom:22px;">
+            <div style="width:70px;height:70px;border-radius:50%;background:var(--accent);opacity:.85;"></div>
+          </div>
+          <div style="font-family:var(--font-display);font-size:22px;line-height:1.25;margin-bottom:10px;">Your mind,<br>understood.</div>
+          <p style="font-size:12px;color:var(--muted);max-width:190px;margin:0 0 24px;">AI-guided care, human-led healing — built for how India lives.</p>
+          <div class="dots"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          <div style="display:flex;gap:10px;width:100%;margin-top:16px;">
+            <button class="btn btn-outline">Skip</button>
+            <button class="btn btn-primary">Next</button>
+          </div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Onboarding intro</b>Value proposition · 3 slides</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div style="font-family:var(--font-display);font-size:21px;margin:20px 0 6px;">Get started</div>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 18px;">Free to begin. No card needed.</p>
+          <button class="btn btn-outline" style="margin-bottom:9px;">Continue with Google</button>
+          <button class="btn btn-outline" style="margin-bottom:16px;">Continue with Apple</button>
+          <div style="text-align:center;font-size:10.5px;color:var(--muted);margin-bottom:16px;">or continue with phone</div>
+          <div class="card" style="margin-bottom:14px;"><div style="font-size:10px;color:var(--muted);margin-bottom:3px;">Mobile number</div><div style="font-size:13px;">+91 98765 43210</div></div>
+          <button class="btn btn-primary">Send OTP</button>
+          <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:14px;">By continuing you agree to our DPDP-compliant Privacy Policy</p>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Sign up / login</b>Social + phone OTP</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent" style="align-items:center;text-align:center;">
+          <div style="font-family:var(--font-display);font-size:20px;margin:24px 0 6px;">Verify your number</div>
+          <p style="font-size:12px;color:var(--muted);margin:0 0 4px;">Code sent to +91 98••• ••21</p>
+          <div class="otp-row">
+            <div class="otp-box filled">4</div><div class="otp-box filled">2</div><div class="otp-box filled">7</div>
+            <div class="otp-box focus"></div><div class="otp-box"></div><div class="otp-box"></div>
+          </div>
+          <p style="font-size:10.5px;color:var(--muted);margin:6px 0 20px;">Resend code in 0:24</p>
+          <button class="btn btn-outline">Verify</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>OTP verification</b>Auto-read on Android</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="dots" style="margin:2px 0 16px;justify-content:flex-start;"><span class="dot active"></span><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px;">Step 2 of 4</div>
+          <div style="font-family:var(--font-display);font-size:19px;line-height:1.3;margin-bottom:16px;">What brings you here today?</div>
+          <div class="opt-card"><span class="radio"></span>Work stress &amp; burnout</div>
+          <div class="opt-card sel"><span class="radio"></span>Anxiety or overthinking</div>
+          <div class="opt-card"><span class="radio"></span>Sleep issues</div>
+          <div class="opt-card"><span class="radio"></span>Just checking in on myself</div>
+          <button class="btn btn-primary" style="margin-top:auto;">Continue</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Intake assessment</b>4 steps · mood, context, goals</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== SECTION 2 — DAILY LOOP ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Daily loop</div>
+    <h2 class="sec-title">The habit, and what breaks it</h2>
+    <p class="sec-note">Home, the 60-second check-in, and AI chat in both its ordinary and highest-stakes state.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:16px;">
+            <div><div style="font-family:var(--font-display);font-size:19px;">Good morning, Arjun</div><div style="font-size:10.5px;color:var(--muted);">Tuesday, 4 August</div></div>
+            <div class="chip active">🔥 12</div>
+          </div>
+          <div class="card" style="background:var(--accent);color:#fff;border:none;margin-bottom:12px;">
+            <div style="font-size:12.5px;font-weight:600;margin-bottom:2px;">Today's check-in</div>
+            <div style="font-size:10.5px;opacity:.85;">60 seconds to reset →</div>
+          </div>
+          <div class="card" style="margin-bottom:12px;">
+            <div style="font-size:9.5px;color:var(--muted);margin-bottom:4px;">Continue where you left off</div>
+            <div style="font-size:11.5px;">"...a 2-minute breathing reset, or talk it through?"</div>
+          </div>
+          <div style="display:flex;gap:8px;margin-bottom:12px;">
+            <div class="card" style="flex:1;text-align:center;padding:10px 6px;"><div style="font-size:10px;">Book<br>therapist</div></div>
+            <div class="card" style="flex:1;text-align:center;padding:10px 6px;"><div style="font-size:10px;">Join<br>circle</div></div>
+          </div>
+          <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-top:auto;">
+            <span style="font-size:11px;">Wellness score</span>
+            <span style="font-size:13px;font-weight:600;color:var(--accent-deep);">72 ↑</span>
+          </div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Home dashboard</b>F1 · daily hub</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="tx" style="margin-left:0;">×</span><span class="ttitle" style="text-align:center;">Morning check-in</span><span style="width:16px;"></span></div>
+          <div class="dots" style="margin-bottom:18px;"><span class="dot active"></span><span class="dot"></span><span class="dot"></span></div>
+          <div style="font-family:var(--font-display);font-size:17px;margin-bottom:4px;">How are you feeling right now?</div>
+          <div class="emoji-row">
+            <div class="emoji-opt">😔</div><div class="emoji-opt">🙁</div><div class="emoji-opt sel">😐</div><div class="emoji-opt">🙂</div><div class="emoji-opt">😄</div>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted);margin-bottom:2px;">Sleep quality</div>
+          <div class="slider-track"><div class="slider-fill" style="width:40%;"></div><div class="slider-thumb" style="left:40%;"></div></div>
+          <div style="font-size:10.5px;color:var(--muted);margin:6px 0 8px;">One word for today</div>
+          <div class="chip-row" style="flex-wrap:wrap;">
+            <span class="chip active">Anxious</span><span class="chip">Hopeful</span><span class="chip">Tired</span><span class="chip">Calm</span>
+          </div>
+          <button class="btn btn-primary" style="margin-top:auto;">Log check-in</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Morning check-in</b>F1 · &lt;60 seconds</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><div><span class="ttitle">MindBridge AI</span><span class="tsub">Always here</span></div></div>
+          <div class="msg-row"><div class="bubble ai">Hey Arjun, saw you logged "drained" this morning. Want to talk about what's weighing on you?</div></div>
+          <div class="msg-row user"><div class="bubble user">Just been a brutal sprint at work, haven't stopped in days</div></div>
+          <div class="msg-row"><div class="bubble ai">That sounds exhausting — running on empty for days straight. Want a 2-minute breathing reset, or would talking it through help more?</div></div>
+          <div class="qr-row"><span class="chip">Breathing reset</span><span class="chip">Let's talk</span><span class="chip">Not now</span></div>
+          <div class="input-bar"><span style="flex:1;">Message MindBridge…</span><span class="send">↑</span></div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>AI chat — ordinary</b>F2 · empathy-first flow</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><div><span class="ttitle">MindBridge AI</span><span class="tsub">Always here</span></div></div>
+          <div class="msg-row user"><div class="bubble user">I just don't see the point anymore</div></div>
+          <div class="msg-row"><div class="bubble ai" style="border-color:var(--red);">I'm really glad you told me that. I don't want you to go through this alone right now.</div></div>
+          <div class="crisis-card">
+            <h4>You deserve support right now</h4>
+            <p>A trained counsellor is available 24/7 — this isn't something AI should handle alone.</p>
+            <button class="btn btn-crisis">Talk to a counsellor · iCall</button>
+            <div class="crisis-link">Vandrevala Foundation helpline</div>
+          </div>
+          <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:10px;">This conversation has been flagged for safety review.</p>
+        </div>
+      </div>
+      <div class="screen-cap"><b>AI chat — crisis</b>F3 · &lt;5s escalation, no dead-end</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== SECTION 3 — THERAPIST BOOKING ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Therapist booking</div>
+    <h2 class="sec-title">From browse to booked</h2>
+    <p class="sec-note">The AI brief — the PRD's core trust mechanic — appears at the profile step, always behind an explicit consent toggle.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="ttitle">Find a therapist</span><span class="tx">⌕</span></div>
+          <div class="chip-row"><span class="chip active">All</span><span class="chip">Anxiety</span><span class="chip">Burnout</span><span class="chip">Hindi</span></div>
+          <div class="ther-card"><div class="avatar">AI</div><div><div class="ther-name">Dr. Ananya Iyer</div><div class="ther-meta">Clinical Psychologist · RCI licensed</div><div class="ther-tags"><span class="mini-tag">4.8 ★</span><span class="mini-tag">₹499</span></div></div></div>
+          <div class="ther-card"><div class="avatar">RK</div><div><div class="ther-name">Rohit Kapoor</div><div class="ther-meta">Counsellor · Burnout specialist</div><div class="ther-tags"><span class="mini-tag">4.6 ★</span><span class="mini-tag">₹399</span></div></div></div>
+          <div class="ther-card"><div class="avatar">SM</div><div><div class="ther-name">Dr. Sana Mehta</div><div class="ther-meta">Psychiatrist · Hindi, English</div><div class="ther-tags"><span class="mini-tag">4.9 ★</span><span class="mini-tag">₹699</span></div></div></div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Browse therapists</b>F4 · filter by need, language, price</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><span class="ttitle">Profile</span></div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;">
+            <div class="avatar" style="width:46px;height:46px;font-size:17px;">AI</div>
+            <div><div style="font-size:13px;font-weight:600;">Dr. Ananya Iyer</div><div style="font-size:10px;color:var(--muted);">English, Hindi · 4.8 ★ (120)</div></div>
+          </div>
+          <div class="chip-row"><span class="chip active">About</span><span class="chip">AI brief</span><span class="chip">Reviews</span></div>
+          <p style="font-size:11px;color:var(--muted);margin-bottom:10px;">8 years in CBT for burnout and anxiety, works with tech professionals across Bengaluru and remote.</p>
+          <div class="card" style="background:var(--accent-soft);border-color:var(--accent);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+              <span style="font-size:11px;font-weight:600;color:var(--accent-deep);">Share your 14-day brief?</span>
+              <span class="toggle"></span>
+            </div>
+            <p style="font-size:10px;color:var(--accent-deep);margin:0;">Mood trending low since Mon · Sleep avg 5.2h · Key trigger: deadlines</p>
+          </div>
+          <button class="btn btn-primary" style="margin-top:auto;">Book a session · ₹499</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Therapist profile</b>F4 · AI brief, consent-gated</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><span class="ttitle">Confirm booking</span></div>
+          <div style="font-size:9.5px;color:var(--muted);margin-bottom:6px;">Choose a day</div>
+          <div class="day-row">
+            <div class="day-chip">Mon<span class="n">4</span></div>
+            <div class="day-chip sel">Tue<span class="n">5</span></div>
+            <div class="day-chip">Wed<span class="n">6</span></div>
+            <div class="day-chip">Thu<span class="n">7</span></div>
+          </div>
+          <div style="font-size:9.5px;color:var(--muted);margin-bottom:6px;">Available slots</div>
+          <div class="slot-grid"><span class="slot">10:00</span><span class="slot">11:30</span><span class="slot sel">4:00 PM</span><span class="slot">6:00 PM</span></div>
+          <div style="font-size:9.5px;color:var(--muted);margin-bottom:6px;">Pay with</div>
+          <div class="card" style="display:flex;justify-content:space-between;margin-bottom:14px;"><span style="font-size:11px;">UPI</span><span class="radio" style="border-color:var(--accent);"></span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px;"><span>Total · 25 min session</span><strong>₹499</strong></div>
+          <button class="btn btn-primary">Pay &amp; confirm</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Slot &amp; payment</b>F4 · UPI / card</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent" style="text-align:center;">
+          <div class="check-circle">✓</div>
+          <div style="font-family:var(--font-display);font-size:19px;margin-bottom:8px;">Booking confirmed</div>
+          <p style="font-size:11.5px;color:var(--muted);margin-bottom:16px;">Dr. Ananya Iyer · Tue, 5 Aug · 4:00 PM</p>
+          <div class="card" style="text-align:left;margin-bottom:16px;"><p style="font-size:10.5px;color:var(--muted);margin:0;">Your AI brief will be shared 30 minutes before your session, with your consent.</p></div>
+          <button class="btn btn-outline" style="margin-bottom:9px;">Add to calendar</button>
+          <button class="btn btn-primary">Done</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Booking confirmed</b>F4 · pre-session brief scheduled</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== SECTION 4 — PEER CIRCLES ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Peer circles</div>
+    <h2 class="sec-title">Anonymous, matched by context</h2>
+    <p class="sec-note">Identity is never shown — anonymised handles only, matching the PRD's stigma-breaking design principle.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="ttitle">Peer circles</span></div>
+          <div class="card" style="background:var(--accent-soft);border-color:var(--accent);margin-bottom:14px;">
+            <div style="font-size:9.5px;color:var(--accent-deep);margin-bottom:3px;">Your circle · 340 members</div>
+            <div style="font-size:12px;font-weight:600;margin-bottom:6px;">Tech Professionals</div>
+            <p style="font-size:10px;color:var(--accent-deep);margin:0 0 8px;">This week: "What's one boundary you set at work?"</p>
+            <button class="btn btn-primary btn-sm">Open</button>
+          </div>
+          <div style="font-size:9.5px;color:var(--muted);margin-bottom:8px;">Explore more circles</div>
+          <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:11px;">Students · 512</span><span class="chip">Join</span></div>
+          <div class="card" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:11px;">Freelancers · 208</span><span class="chip">Join</span></div>
+          <div class="card" style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:11px;">New parents · 96</span><span class="chip">Join</span></div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Circles — join</b>F6 · matched by life context</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><div><span class="ttitle">Tech Professionals</span><span class="tsub">340 members</span></div></div>
+          <div class="card" style="background:var(--accent-soft);border-color:var(--accent);margin-bottom:12px;"><p style="font-size:11px;color:var(--accent-deep);margin:0;">This week: "What's one boundary you set at work recently?"</p></div>
+          <div class="anon-card"><div class="anon-head"><span class="avatar">M7</span><span class="anon-name">Member M7</span><span class="anon-time">2h ago</span></div><p class="anon-text">Stopped replying to Slack after 8pm. Felt guilty for two days, then realised no one actually needed it.</p></div>
+          <div class="anon-card"><div class="anon-head"><span class="avatar">K3</span><span class="anon-name">Member K3</span><span class="anon-time">5h ago</span></div><p class="anon-text">Said no to a weekend on-call swap. Small thing, felt huge.</p></div>
+          <div class="input-bar" style="margin-top:6px;"><span style="flex:1;">Share your response…</span><span class="send">↑</span></div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Circle feed</b>F6 · weekly prompt, anonymous replies</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== SECTION 5 — CONTENT LIBRARY ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Content library</div>
+    <h2 class="sec-title">7-day modules</h2>
+    <p class="sec-note">Recommended by mood cluster, authored by licensed professionals — reached from Home, not its own tab.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><span class="ttitle">Content library</span></div>
+          <div class="chip-row"><span class="chip active">Burnout</span><span class="chip">Anxiety</span><span class="chip">Sleep</span></div>
+          <div class="mod-card"><div class="mod-thumb" style="background:var(--accent-soft);"></div><div style="flex:1;"><div class="mod-title">7 days to quieter mornings</div><div class="mod-meta">3 of 7 lessons · 12 min left</div><div class="mod-bar"><span style="width:42%;"></span></div></div></div>
+          <div class="mod-card"><div class="mod-thumb" style="background:var(--amber-soft);"></div><div style="flex:1;"><div class="mod-title">Naming the burnout drain</div><div class="mod-meta">Not started · 18 min</div><div class="mod-bar"><span style="width:0;"></span></div></div></div>
+          <div class="mod-card"><div class="mod-thumb" style="background:var(--blue-soft);"></div><div style="flex:1;"><div class="mod-title">Sleep reset for shift workers</div><div class="mod-meta">Not started · 15 min</div><div class="mod-bar"><span style="width:0;"></span></div></div></div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Module library</b>F5 · 3 launch modules</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="back">‹</span><span style="font-size:9.5px;color:var(--muted);">Lesson 3 of 7</span></div>
+          <div class="mod-bar" style="margin-bottom:16px;"><span style="width:43%;"></span></div>
+          <div style="font-family:var(--font-display);font-size:19px;margin-bottom:10px;">Naming the drain</div>
+          <p style="font-size:11.5px;color:var(--muted);margin-bottom:14px;">Burnout rarely announces itself. It shows up as irritability at small things, or dread on Sunday night — long before you'd call it "burnout" out loud.</p>
+          <div class="card" style="margin-bottom:14px;">
+            <div style="font-size:10.5px;font-weight:600;margin-bottom:4px;">60-second grounding</div>
+            <p style="font-size:10px;color:var(--muted);margin:0 0 8px;">Notice 3 things you can see, 2 you can hear, 1 you can feel.</p>
+            <button class="btn btn-outline btn-sm">▶ Start</button>
+          </div>
+          <button class="btn btn-primary" style="margin-top:auto;">Mark complete</button>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Module lesson</b>F5 · daily lesson + exercise</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== SECTION 6 — WELLNESS INSIGHTS ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Wellness insights</div>
+    <h2 class="sec-title">Cross-domain correlations</h2>
+    <p class="sec-note">The payoff for the daily check-in habit: patterns the user couldn't see logging mood, sleep, and activity separately.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="ttitle">Your wellness</span></div>
+          <div class="ring"><div class="ring-in"><span class="ring-num">72</span><span class="ring-lbl">+4 this week</span></div></div>
+          <p style="text-align:center;font-size:10px;color:var(--muted);margin:0 0 8px;">Wellness score</p>
+          <div class="bars">
+            <div class="bar" style="height:40%;"></div><div class="bar" style="height:55%;"></div><div class="bar hi" style="height:80%;"></div>
+            <div class="bar" style="height:35%;"></div><div class="bar" style="height:60%;"></div><div class="bar" style="height:70%;"></div><div class="bar" style="height:50%;"></div>
+          </div>
+          <div class="card" style="background:var(--blue-soft);border-color:var(--blue);margin-bottom:12px;">
+            <p style="font-size:10.5px;color:var(--blue);margin:0;">We noticed: anxiety tends to spike on days after under 5.5h sleep.</p>
+          </div>
+          <button class="btn btn-outline">View full report</button>
+        </div>
+        <div class="pnav">
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Wellness dashboard</b>F7 · score, trend, correlation</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========== SECTION 7 — ACCOUNT & SETTINGS ========== -->
+<section class="gallery-section">
+  <div class="sec-head">
+    <div class="eyebrow">Account &amp; settings</div>
+    <h2 class="sec-title">Notifications, privacy, and the paywall</h2>
+    <p class="sec-note">DPDP export/delete get equal visual weight to every other setting — privacy controls aren't buried three menus deep.</p>
+  </div>
+  <div class="gallery-row">
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="ttitle">Notifications</span></div>
+          <div class="notif"><span class="notif-dot"></span><div class="notif-txt">Your weekly wellness report is ready<div class="notif-time">2h ago</div></div></div>
+          <div class="notif"><span class="notif-dot"></span><div class="notif-txt">Dr. Iyer confirmed your session<div class="notif-time">1d ago</div></div></div>
+          <div class="notif"><span class="notif-dot read"></span><div class="notif-txt">New prompt in Tech Professionals circle<div class="notif-time">2d ago</div></div></div>
+          <div class="notif"><span class="notif-dot read"></span><div class="notif-txt">You've checked in 12 days in a row 🔥<div class="notif-time">3d ago</div></div></div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Notification centre</b>Push + in-app</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="ttitle">Profile</span></div>
+          <div style="display:flex;gap:10px;align-items:center;margin-bottom:6px;">
+            <div class="avatar" style="width:44px;height:44px;font-size:16px;">AM</div>
+            <div><div style="font-size:13px;font-weight:600;">Arjun Mehta</div><div style="font-size:10px;color:var(--muted);">+91 98••• ••21</div></div>
+          </div>
+          <div class="set-row"><span>Edit profile</span><span>›</span></div>
+          <div class="set-row"><span>Notification preferences</span><span>›</span></div>
+          <div class="set-row"><span>Language: English</span><span>›</span></div>
+          <div class="set-head">Privacy &amp; data</div>
+          <div class="set-row"><span>Download my data<div class="lbl-sub">DPDP export</div></span><span>›</span></div>
+          <div class="set-row"><span>Data stored in India</span><span style="color:var(--accent);">✓</span></div>
+          <div class="set-row danger"><span>Delete my account</span><span>›</span></div>
+        </div>
+        <div class="pnav">
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-home"/></svg>Home</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-chat"/></svg>Chat</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-circles"/></svg>Circles</div>
+          <div class="nav-item"><svg class="nav-icon"><use href="#i-book"/></svg>Book</div>
+          <div class="nav-item active"><svg class="nav-icon"><use href="#i-user"/></svg>Profile</div>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Profile &amp; privacy</b>DPDP export/delete, equal weight</div>
+    </div>
+
+    <div class="frame-block">
+      <div class="phone">
+        <div class="pstatus"><span>9:41</span><span class="batt"></span></div>
+        <div class="pcontent">
+          <div class="topbar"><span class="tx" style="margin-left:0;">×</span><span class="ttitle" style="text-align:center;">MindBridge Plus</span><span style="width:16px;"></span></div>
+          <div class="plan-card">
+            <div style="font-size:11px;color:var(--muted);">Free</div>
+            <div class="plan-price">₹0</div>
+            <div class="feat">AI chat, 20 msgs/day</div>
+            <div class="feat">Basic dashboard</div>
+            <div class="feat">Crisis support, always on</div>
+          </div>
+          <div class="plan-card hi"><span class="plan-tag">Popular</span>
+            <div style="font-size:11px;color:var(--accent-deep);">Plus</div>
+            <div class="plan-price" style="color:var(--accent-deep);">₹499<span>/mo</span></div>
+            <div class="feat">Unlimited AI chat + voice</div>
+            <div class="feat">₹400 therapist credit/mo</div>
+            <div class="feat">Weekly AI insight report</div>
+          </div>
+          <button class="btn btn-primary">Upgrade to Plus</button>
+          <p style="font-size:9px;color:var(--muted);text-align:center;margin-top:8px;">Cancel anytime</p>
+        </div>
+      </div>
+      <div class="screen-cap"><b>Subscription paywall</b>Free vs Plus</div>
+    </div>
+
+  </div>
+</section>
+
+<footer class="pf">
+  <span>MindBridge — Product UI</span>
+  <span>Companion to PRD v1.0 &amp; System Architecture · 20 screens</span>
+</footer>
+
+</div>
+</body>
+</html>
